@@ -15,7 +15,7 @@ body{
      margin: 0;
      padding: 0;
 }
-.signup-container{
+.login-container{
     
     max-width: 500px;
     background-color: #ffff;
@@ -90,10 +90,10 @@ button:hover{
 .toast.error {
   background-color: #dc3545;
 }
-.already-member{
+.signup-message{
     text-align: center;
     color: slategrey;
 }
-#login{
+#signup{
     text-decoration: none;
 }
