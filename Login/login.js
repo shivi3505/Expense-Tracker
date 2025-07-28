@@ -12,10 +12,13 @@ loginForm.addEventListener('submit', async (e)=>{
    }
    try{
     const userLogin= await axios.post(apiURL,login);
-    console.log(userLogin);
+    console.log(userLogin.data);
       //  loginForm.reset();
       //   window.alert('Login Successfully')
       if(userLogin){
+         localStorage.setItem('userId',userLogin.data.id)
+         loginForm.reset();
+         alert('Login Successfully')
          window.location.href= '../dashboard.html';
       }
     

@@ -1,7 +1,12 @@
-const apiURL= "http://localhost:3000/expenses"
+const apiURL= "http://localhost:3000/expenses";
+const userId= localStorage.getItem('userId')
 document.addEventListener("DOMContentLoaded", async () => {
   try{
-   const result= await axios.get(apiURL);
+   const result= await axios.get(apiURL,{
+            headers: {
+                'user-id':userId
+            }
+        });
    console.log(result);
    result.data.forEach((res) => displayExpense(res));
     
@@ -35,7 +40,14 @@ function submitForm(e){
 }
  async function addExpense(expense) {
   try {
-    const res = await axios.post(apiURL, expense);
+    const res = await axios.post(apiURL, expense,
+        {
+            headers: {
+                'user-id':userId
+            }
+        }
+
+    );
     console.log(res.data);
     displayExpense(res.data);
   } catch (err) {
@@ -51,17 +63,17 @@ function displayExpense(expense){
   listItem.innerHTML = `
     <div class="fw-bold mb-2">${expense.expenseAmount} ₹ - ${expense.expenseType}</div>
     <div class="text-muted mb-2">${expense.description}</div>
-     <button class="btn btn-sm btn-danger me-2" onclick="deleteExpense('${expense.id}', this)">Delete Expense</button>
+     <button class="btn btn-sm btn-danger me-2" onclick="deleteExpense('${expense.id}')">Delete Expense</button>
       `;
 
    expenseList.appendChild(listItem);
     
  }
-async function deleteExpense(id,button){
+async function deleteExpense(id){
 
   await axios.delete(apiURL+`/${id}`);
-  const listItem= button.closest('li');
-  listItem.remove();
+ // const listItem= button.closest('li');
+  document.getElementById(id).remove();
   
 }
 // function editExpense(expense){
