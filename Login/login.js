@@ -16,7 +16,7 @@ loginForm.addEventListener('submit', async (e)=>{
       //  loginForm.reset();
       //   window.alert('Login Successfully')
       if(userLogin){
-         localStorage.setItem('userId',userLogin.data.id)
+         localStorage.setItem('token',userLogin.data.token)
          loginForm.reset();
          alert('Login Successfully')
          window.location.href= '../dashboard.html';

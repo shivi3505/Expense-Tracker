@@ -1,13 +1,13 @@
 const apiURL= "http://localhost:3000/expenses";
-const userId= localStorage.getItem('userId')
+const token= localStorage.getItem('token')
 document.addEventListener("DOMContentLoaded", async () => {
   try{
    const result= await axios.get(apiURL,{
             headers: {
-                'user-id':userId
+                'token':token
             }
         });
-   console.log(result);
+//    console.log(result);
    result.data.forEach((res) => displayExpense(res));
     
   }catch(err){
@@ -22,13 +22,13 @@ function submitForm(e){
   let expenseAmount = document.getElementById("expenseamount").value;
   let expenseType = document.getElementById("expensetype").value;
   let description = document.getElementById("description").value;
-  console.log(expenseAmount,expenseType,description);
+//   console.log(expenseAmount,expenseType,description);
   const expense = {
     expenseAmount,
     expenseType,
      description
   }
- console.log(expense);
+//  console.log(expense);
 
 
     addExpense(expense);
@@ -36,22 +36,25 @@ function submitForm(e){
  // expenselist.push(expense);
   //localStorage.setItem("expense",JSON.stringify(expenselist));
   //displayExpense(expense);
-  form.reset();
+  //form.reset();
 }
  async function addExpense(expense) {
   try {
     const res = await axios.post(apiURL, expense,
         {
             headers: {
-                'user-id':userId
+                'token':token
             }
         }
 
     );
-    console.log(res.data);
+    // console.log(res.data);
+    if(res){
+        form.reset();
     displayExpense(res.data);
+    }
   } catch (err) {
-    console.log("Error posting:", err.message);
+     console.log("Error posting:", err.message);
   }
 }
 
@@ -71,7 +74,11 @@ function displayExpense(expense){
  }
 async function deleteExpense(id){
 
-  await axios.delete(apiURL+`/${id}`);
+  await axios.delete(apiURL+`/${id}`,{
+      headers: {
+        'token':token
+      }
+  });
  // const listItem= button.closest('li');
   document.getElementById(id).remove();
   
@@ -90,7 +97,7 @@ async function updateExpense(expense,editId){
   const id= expense.id;
   
    const result= await axios.put(apiURL+`/${editId}`,expense);
-   console.log(id);
+//    console.log(id);
 
  }catch(err){
   console.log(err);
