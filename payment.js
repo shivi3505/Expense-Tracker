@@ -24,8 +24,11 @@ document.getElementById("rendere-btn").addEventListener("click", async () => {
             console.log(result.paymentDetails.paymentMessage);
             const Status= await axios.get(`http://localhost:3000/pay-status/${orderId}`);
             console.log(Status.data);
-            if(Status){
-                alert(`your payment is ${Status.data.paymentStatus}`);
+            if(Status.data.paymentStatus==='success'){
+                alert(`your payment is Successful`);
+            }
+            else{
+              alert('your payment is fail ');
             }
           }
 
