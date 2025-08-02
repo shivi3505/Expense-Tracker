@@ -1,9 +1,17 @@
- const cashfree = Cashfree({
+
+const cashfree = Cashfree({
                 mode: "sandbox",
             });
+
 document.getElementById("rendere-btn").addEventListener("click", async () => {
+  const token= localStorage.getItem('token');
          try{ 
-                const response= await axios.post('http://localhost:3000/pay');
+          
+                const response= await axios.post('http://localhost:3000/pay', {},{
+                  headers:{
+                    'token':token
+                  }
+                });
                 const paymentSessionId= response.data.paymentSessionId;
                 const orderId= response.data.orderId;
                     
@@ -22,10 +30,25 @@ document.getElementById("rendere-btn").addEventListener("click", async () => {
           if(result.paymentDetails){
             console.log('payment has been completed check for payment status');
             console.log(result.paymentDetails.paymentMessage);
-            const Status= await axios.get(`http://localhost:3000/pay-status/${orderId}`);
-            console.log(Status.data);
-            if(Status.data.paymentStatus==='success'){
+            const Status= await axios.get(`http://localhost:3000/pay-status/${orderId}`,{
+
+              headers:{
+                  'token': token
+              }
+            }
+            );
+           
+            // console.log(Status.data);
+            if(Status.data.paymentStatus==='Success'){
                 alert(`your payment is Successful`);
+                document.getElementById("rendere-btn").style.display='none'
+              const premiumElements = document.getElementsByClassName('premium');
+              for (let i = 0; i < premiumElements.length; i++) {
+         premiumElements[i].classList.remove('d-none');
+         premiumElements[i].classList.add('d-block'); 
+}
+
+                
             }
             else{
               alert('your payment is fail ');
@@ -38,3 +61,6 @@ document.getElementById("rendere-btn").addEventListener("click", async () => {
                  }
                 
             });
+
+
+  

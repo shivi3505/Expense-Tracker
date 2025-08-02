@@ -9,11 +9,22 @@
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body class="bg-light">
-<header class=" d-flex justify-content-end p-3">
-        <button id="rendere-btn" class="btn btn-primary ">Buy Premium Membership</button>
+  
+<header class="d-flex justify-content-end p-3">
 
-    </header>
+    <button id="rendere-btn" class="btn btn-primary premium-button">Buy Premium Membership</button>
+  
+</header>
+
   <div class="container mx-auto mt-5" style="max-width: 700px;">
+    
+    <h2 id= "welcome"  class="p-2 premium "></h2>
+    <p class="p-2 premium d-none">You are a premium user</p>
+    <div class="d-flex justify-content-start align-item-center p-2 premium d-none" >
+    <button id="leaderboard" class="btn btn-primary premium premium-button align-item-center ">Show Leaderboard</button>
+    
+   
+  </div>
     <h2 class="text-center mb-4">Expense Tracker</h2>
 
     <form id="expenseForm"  class="card p-4 shadow-lg">
@@ -42,5 +53,6 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="dashboard.js"></script>
   <script src="payment.js"></script>
+  
 </body>
 </html>

@@ -1,5 +1,5 @@
 const loginForm= document.getElementById('login-form');
-apiURL= 'http://localhost:3000/login'
+apiURL= 'http://localhost:3000/user/login'
 loginForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
    document.getElementById('email-error').textContent='';

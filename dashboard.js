@@ -1,8 +1,23 @@
-const apiURL= "http://localhost:3000/expenses";
+const apiURL= "http://localhost:3000";
 const token= localStorage.getItem('token')
 document.addEventListener("DOMContentLoaded", async () => {
   try{
-   const result= await axios.get(apiURL,{
+    const isUserPremium= await axios.get(apiURL+'/user/ispremium',{
+       headers: {
+                'token':token
+            }
+    });
+    if(isUserPremium.data.isPremium==='yes'){
+          document.getElementById("rendere-btn").style.display='none';
+          document.getElementById("welcome").textContent= `Welcome Back,${isUserPremium.data.name.split(" ")[0]}`;
+              const premiumElements = document.getElementsByClassName('premium');
+              for (let i = 0; i < premiumElements.length; i++) {
+         premiumElements[i].classList.remove('d-none');
+         premiumElements[i].classList.add('d-block'); 
+}
+
+    }
+   const result= await axios.get(apiURL+'/expenses',{
             headers: {
                 'token':token
             }
@@ -14,6 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
      console.log(err);
   }
 });
+
+document.getElementById('leaderboard').addEventListener('click',()=>{
+  window.location.href= './leaderboard/leaderboard.html';
+})
 const form=document.getElementById("expenseForm");
 
 form.addEventListener("submit", submitForm);
@@ -40,7 +59,7 @@ function submitForm(e){
 }
  async function addExpense(expense) {
   try {
-    const res = await axios.post(apiURL, expense,
+    const res = await axios.post(apiURL+'/expenses', expense,
         {
             headers: {
                 'token':token
@@ -74,7 +93,7 @@ function displayExpense(expense){
  }
 async function deleteExpense(id){
 
-  await axios.delete(apiURL+`/${id}`,{
+  await axios.delete(apiURL+`/expenses/${id}`,{
       headers: {
         'token':token
       }

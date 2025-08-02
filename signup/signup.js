@@ -1,5 +1,5 @@
 const signupForm= document.getElementById('signup-form');
-const apiURL= "http://localhost:3000/signup"
+const apiURL= "http://localhost:3000/user/signup"
 signupForm.addEventListener('submit',async (e)=>{
     e.preventDefault();
     document.getElementById('name-error').textContent=' ';
