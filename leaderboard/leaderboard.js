@@ -2,9 +2,9 @@ const apiURL= 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded',async ()=>{
     try{
-   const totalExpensAmount= await axios.get(apiURL+'/user');
-    console.log(totalExpenseAmount);
-    totalExpenseAmount.data.forEach((data) => {
+    userLeaderBoard= await axios.get(apiURL+'/premiumfeature/leaderboard');
+    // console.log(userLeaderBoard.data);
+    userLeaderBoard.data.forEach((data) => {
         displayLeaderboardData(data);
     });
     }catch(err){
@@ -24,7 +24,7 @@ function displayLeaderboardData(data){
     const tDataName= document.createElement('td');
     tDataName.textContent= data.name;
     const tDataAmount= document.createElement('td');
-    tDataAmount.textContent= data.total_amount||0;
+    tDataAmount.textContent= data.totalExpenses||0;
 
 
     tableRow.appendChild(srData);
