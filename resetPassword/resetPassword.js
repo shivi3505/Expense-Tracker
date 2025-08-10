@@ -13,6 +13,10 @@ console.log(id);
    
     alert(res.data.message)
 }catch(err){
+    
 console.log(err);
 }
 });
+// function checkLinkIsValid(status){
+//     if(status===200)
+// }

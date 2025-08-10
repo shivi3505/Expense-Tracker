@@ -17,13 +17,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 }
 
     }
-   const result= await axios.get(apiURL+'/expenses',{
+    const page=1;
+   const result= await axios.get(apiURL+`/expenses?page=${page}`,{
             headers: {
                 'token':token
             }
         });
-//    console.log(result);
-   result.data.forEach((res) => displayExpense(res));
+   console.log(result);
+const {expenses,...pageData}= result.data;
+   expenses.forEach((res) => displayExpense(res));
+   showPagination(pageData);
     
   }catch(err){
      console.log(err);
@@ -130,4 +133,49 @@ async function updateExpense(expense,editId){
    
     const submitButton = document.querySelector("button[type='submit']");
     submitButton.textContent="Add Expense";
+}
+async function download(){
+  try{
+   const response= await  axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+       
+        if(response.status === 201){
+            //the bcakend is essentially sending a download link
+            //  which if we open in browser, the file would download
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+
+   
+      }catch(err){
+        console.log(err);
+      }
+}
+
+function showPagination({
+        currentPage,
+        totalItems,
+        lastPage,
+        hasNextPage,
+        nextPage,
+        hasPreviousPage,
+        previousPage
+}){
+  const pagination= document.getElementById('page');
+  pagination.innerHTML=' ';
+  if(hasPreviousPage){
+   btnPrev= document.createElement('button');
+   btnPrev.classList= 'btn btn-primary p-2'
+   btnPrev.innerHTML= `<h3>${previousPage}</h3>`;
+   btnPrev.addEventListener('click',()=>getExpenses(previousPage));
+   pagination.appendChild(btnPrev);
+  }
+   btnCurrent= document.createElement('button');
+   btnCurrent.classList= 'btn btn-primary p-2'
+   btnCurrent.innerHTML= `<h3>${currentPage}</h3>`;
+   btnCurrent.addEventListener('click',()=>getExpenses(currentPage));
+   pagination.appendChild(btnCurrent);
 }
