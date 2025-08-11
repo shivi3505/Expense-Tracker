@@ -1,5 +1,8 @@
 const apiURL= "http://localhost:3000";
-const token= localStorage.getItem('token')
+const token= localStorage.getItem('token');
+let currentPage= localStorage.getItem('currentPage')?localStorage.getItem('currentPage'):1;
+ const expenseLimit= document.getElementById('expenseLimit').value||10;
+ localStorage.setItem('limit',expenseLimit);
 document.addEventListener("DOMContentLoaded", async () => {
   try{
     const isUserPremium= await axios.get(apiURL+'/user/ispremium',{
@@ -17,17 +20,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 }
 
     }
-    const page=1;
-   const result= await axios.get(apiURL+`/expenses?page=${page}`,{
-            headers: {
-                'token':token
-            }
-        });
-   console.log(result);
-const {expenses,...pageData}= result.data;
-   expenses.forEach((res) => displayExpense(res));
-   showPagination(pageData);
-    
+    // const page=1;
+//    const result= await axios.get(apiURL+`/expenses?page=${page}`,{
+//             headers: {
+//                 'token':token
+//             }
+//         });
+//    console.log(result);
+// const {expenses,...pageData}= result.data;
+//    expenses.forEach((res) => displayExpense(res));
+//    showPagination(pageData);
+    getExpenses(currentPage);
   }catch(err){
      console.log(err);
   }
@@ -73,6 +76,7 @@ function submitForm(e){
     // console.log(res.data);
     if(res){
         form.reset();
+    getExpenses(currentPage);
     displayExpense(res.data);
     }
   } catch (err) {
@@ -84,7 +88,7 @@ function displayExpense(expense){
   const expenseList = document.getElementById("expenseList");
   const listItem = document.createElement("li");
   listItem.id= expense.id;
-  listItem.className = "list-group-item d-flex justify-content-between align-items-center flex-wrap";
+  listItem.className = "itemlist- list-group-item d-flex justify-content-between align-items-center flex-wrap";
   listItem.innerHTML = `
     <div class="fw-bold mb-2">${expense.expenseAmount} ₹ - ${expense.expenseType}</div>
     <div class="text-muted mb-2">${expense.description}</div>
@@ -101,9 +105,14 @@ async function deleteExpense(id){
         'token':token
       }
   });
+  const expensesLength= document.querySelectorAll('list-item').length;
+  if(expensesLength===0 && currentPage>0){
+    currentPage=currentPage-1;
+    localStorage.setItem('currentPage',currentPage);
+  }
  // const listItem= button.closest('li');
   document.getElementById(id).remove();
-  
+  getExpenses(currentPage);
 }
 // function editExpense(expense){
 //   document.getElementById("expenseamount").value=expense.expenseAmount;
@@ -165,17 +174,47 @@ function showPagination({
         previousPage
 }){
   const pagination= document.getElementById('page');
+ 
   pagination.innerHTML=' ';
   if(hasPreviousPage){
    btnPrev= document.createElement('button');
-   btnPrev.classList= 'btn btn-primary p-2'
-   btnPrev.innerHTML= `<h3>${previousPage}</h3>`;
+   btnPrev.classList= 'btn btn-primary m-1 '
+   btnPrev.innerHTML= `${previousPage}`;
    btnPrev.addEventListener('click',()=>getExpenses(previousPage));
    pagination.appendChild(btnPrev);
   }
    btnCurrent= document.createElement('button');
-   btnCurrent.classList= 'btn btn-primary p-2'
-   btnCurrent.innerHTML= `<h3>${currentPage}</h3>`;
+   btnCurrent.classList= 'btn btn-primary m-1'
+   btnCurrent.innerHTML= `${currentPage}`;
    btnCurrent.addEventListener('click',()=>getExpenses(currentPage));
    pagination.appendChild(btnCurrent);
+   if(hasNextPage){
+   btnNext= document.createElement('button');
+   btnNext.classList= 'btn btn-primary m-1'
+   btnNext.innerHTML= `${nextPage}`;
+   btnNext.addEventListener('click',()=>getExpenses(nextPage));
+   pagination.appendChild(btnNext);
+  }
+}
+
+async function getExpenses(page){
+  try{
+   const limit= parseInt(localStorage.getItem('limit'));
+   localStorage.setItem('currentPage',page);
+  const result= await axios.get(apiURL+`/expenses?page=${page}&limit=${limit}`,{
+            headers: {
+                'token':token
+            }
+        });
+          
+   console.log(result);
+   const expenseList = document.getElementById("expenseList");
+    expenseList.innerHTML = '';
+const {expenses,...pageData}= result.data;
+// currentPage= pageData.lastPage;
+   expenses.forEach((res) => displayExpense(res));
+   showPagination(pageData);
+      }catch(err){
+        console.log(err);
+      }
 }
